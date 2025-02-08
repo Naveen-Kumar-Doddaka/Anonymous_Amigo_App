@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Alert System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: red;
+            color: white;
+            border: none;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Emergency Alert System</h2>
+        <form id="alertForm">
+            <input type="text" id="name" placeholder="Enter Your Name" required>
+            <input type="text" id="location" placeholder="Enter Your Location" required>
+            <input type="tel" id="phone" placeholder="Enter Your Phone Number" required>
+            <input type="url" id="photo_url" placeholder="Enter Photo URL (Optional)">
+            <button type="submit">Send Alert 🚨</button>
+        </form>
+        <p id="responseMessage"></p>
+    </div>
+
+    <script>
+        document.getElementById("alertForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const location = document.getElementById("location").value;
+            const phone = document.getElementById("phone").value;
+            const photo_url = document.getElementById("photo_url").value;
+
+            fetch("http://127.0.0.1:5000/send_alert", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: name,
+                    location: location,
+                    phone: phone,
+                    photo_url: photo_url
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("responseMessage").innerText = data.status;
+            })
+            .catch(error => {
+                document.getElementById("responseMessage").innerText = "Error sending alert!";
+                console.error("Error:", error);
+            });
+        });
+    </script>
+
+</body>
+</html>
